@@ -1,7 +1,9 @@
 
 from llama_index.core import SimpleDirectoryReader
-from src.utility import chuck
-from llama_index.core import  Document
+from llama_index.core.retrievers import VectorIndexRetriever
+from llama_index.core.query_engine import RetrieverQueryEngine
+from llama_index.core import  get_response_synthesizer
+from llama_index.core.postprocessor import SimilarityPostprocessor
 import os
 
 
@@ -15,7 +17,28 @@ def create_query_engine(index):
     except Exception as e:
         print(e)
 
+
+def create_retriever(index):
+    try:
+        retriever = VectorIndexRetriever(
+        index=index,
+        similarity_top_k=8)
+        # configure response synthesizer
+        response_synthesizer = get_response_synthesizer()
+
+        # assemble query engine
+        query_engine = RetrieverQueryEngine(
+            retriever=retriever,
+            response_synthesizer=response_synthesizer,
+            node_postprocessors=[SimilarityPostprocessor(similarity_cutoff=0.8)],
+        )
+        return query_engine
+    except Exception as e:
+        print(e)
+
+
 def update_index( file_path, index):
+      print(f"Updatting {index}")
       if not os.path.isfile(file_path):
           print(f"Error: File not found: {file_path}")
           return

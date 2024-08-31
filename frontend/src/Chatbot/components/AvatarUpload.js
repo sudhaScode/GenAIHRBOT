@@ -17,6 +17,7 @@ const AvatarUpload = ({ onClose, onOKClick }) => {
 
   const onClickOnOk = () => {
     setUserUploadedImage(imageUrl);
+    console.log(imageUrl)
     onOKClick();
   };
 
@@ -31,11 +32,15 @@ const AvatarUpload = ({ onClose, onOKClick }) => {
             flexDirection: "column",
             padding:"3% 0"
           }}
+          for= "image"
         >
           Upload Avatar Image:
-          <input className="file-input-button" style={{paddingTop:"5%",cursor:"pointer"}} type="file" onChange={handleImageChange} accept="image/*" />
+          
         </label>
+       
         {imageUrl && <img src={imageUrl} alt="Image" className="BOT" />}
+
+        <input id="image" className="file-input-button" style={{paddingTop:"5%",cursor:"pointer"}} type="file" onChange={handleImageChange} accept="image/*" placeholder=""/>
       </div>
       <button
         onClick={onClose}

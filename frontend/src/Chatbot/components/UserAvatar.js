@@ -42,7 +42,7 @@ export default function UserAvatar() {
           <div
             style={{
               width: "max-content",
-              backgroundColor: "rgb(49, 39, 39, 0.5)",
+              backgroundColor: "rgb(50, 30, 30, 0.5)",
               height: "50%",
               borderRadius: "10px",
               display: "flex",

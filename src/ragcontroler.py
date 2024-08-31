@@ -21,12 +21,12 @@ gemini = Gemini(model_name="models/gemini-pro", temperature=0.5, max_tokens=2048
 gemini_embedding = GeminiEmbedding(model_name="models/embedding-001", api_key=os.getenv("GOOGLE_API_KEY"))
 
 folder_path = f"./resources/documents/"
-persist_dir = f"./vectorstore/persist/"
+persist_dir = "./vectorstore/persist/"
 
 document = read_file(folder_path)
 
 #Vector store  Setup
-ChromaDB = ChromaDB(gemini=gemini, gemini_embedding=gemini_embedding, vector_store="persist")
+ChromaDB = ChromaDB(gemini=gemini, gemini_embedding=gemini_embedding, vector_store="persist", persist_dir=persist_dir)
 
 """
 #Index Setup
@@ -41,7 +41,7 @@ index = ChromaDB.create_index(storage_context)
 """
 #lock = multiprocessing.Lock()
 ##create vector index
-ChromaDB.create_vector_index(document= document, PERSIST_DIR=persist_dir)
+ChromaDB.create_vector_index(document= document)
 #lock.acquire()
 ##get index
 index = ChromaDB.get_index()
@@ -49,6 +49,13 @@ index = ChromaDB.get_index()
 #index= ChromaDB.get_index(storage_context)
 #index = ChromaDB.initialize_index(persist_dir, document)
 query_engine =  index.as_query_engine()
+
+
+def update_context(file_path):
+    ChromaDB.update_index(file_path=file_path)
+
+def retrieval_query():
+    return ChromaDB.create_retriever()
 
 """
 if __name__ == "__main__":

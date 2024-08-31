@@ -1,9 +1,8 @@
 import json
 #import the finetuned modal 
-from vectorstore.chromadb_utills import update_index, create_query_engine
-from src.ragcontroler import index, query_engine 
+from src.ragcontroler import index, update_context, retrieval_query
 import time
-
+from vectorstore.chromadb_utills import create_retriever, create_query_engine
 #import the fastapi
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import  JSONResponse,ORJSONResponse
@@ -42,6 +41,8 @@ async def context_chat(query: Query) :#-> ORJSONResponse
     #send the query to llm
     #message = payload.get("message")
     prompt = query.prompt
+    query_engine = create_query_engine(index)
+    #query_engine = retrieval_query()
     response_dict = query_engine.query(prompt)
     response_text = response_dict['response'].response
     return JSONResponse({"prompt_response": response_text})
@@ -52,13 +53,13 @@ async def upload_context(file: UploadFile = File(...)):
     
     try:  
         print("Invoked")
-        file_path =f"C:/Users/SUBOMMAS/LLM_Projects/HRBOT/resources/uploads/{file.filename}"
+        file_path =f"./resources/uploads/{file.filename}"
         print(file_path)
         with open(file_path, "wb") as f:
             f.write(file.file.read())
 
         # Call the method to update the vector store index
-        update_index(file_path=file_path, index=index)
+        update_context(file_path=file_path)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

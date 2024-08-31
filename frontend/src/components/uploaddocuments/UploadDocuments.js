@@ -23,6 +23,7 @@ function UploadDocuments() {
         const response = await fetch('http://127.0.0.1:8000/upload', {
           method: "POST",
           body: fileData,
+          //add contenttype file
         });
 
         if (response.status === 200) {
